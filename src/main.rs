@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+mod vga_buffer;
 use core::panic::PanicInfo;
 
 /* Kernel entry point.
@@ -12,6 +13,7 @@ use core::panic::PanicInfo;
 * For now, we fulfill the requirement by looping endlessly. */
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    println!("visage {}", "0.0.1");
     loop {}
 }
 
@@ -22,5 +24,6 @@ pub extern "C" fn _start() -> ! {
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
+    println!("{}", _info);
     loop {}
 }
