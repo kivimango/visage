@@ -8,7 +8,7 @@ edition = "2018"
 
 # Disabling Unwinding
 # This disables the generation of unwinding symbol information and thus considerably reduces binary size and sets the panic strategy to abort.
-# By default, Rust uses unwinding to run the destructors of all live stack variables in case of a panic.
+# By default, Rust uses stack unwinding to run the destructors of all live stack variables in case of a panic.
 # This ensures that all used memory is freed and allows the parent thread to catch the panic and continue execution. Unwinding, however, is a complicated process
 # and requires some OS specific libraries (e.g. libunwind on Linux or structured exception handling on Windows).
 # Note: the eh_personality language item should no longer be required for building.
@@ -20,3 +20,10 @@ panic = "abort"
 
 [dependencies]
 bootloader = "0.8.3"
+
+spin = "0.5.2"
+volatile = "0.2.6"
+
+[dependencies.lazy_static]
+version = "1.0"
+features = ["spin_no_std"]
