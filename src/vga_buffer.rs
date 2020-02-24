@@ -6,15 +6,15 @@ use volatile::Volatile;
 const BUFFER_WIDTH: usize = 80;
 const BUFFER_HEIGHT: usize = 25;
 
-/** A global writer instance used by print!() and println!() macros.
-* The framebuffer is accessible just like normal RAM, at address 0xB8000.
-* It is important to note, however, that it is not actually normal RAM.
-* It is part of the VGA controller's dedicated video memory that has been memory-mapped via hardware into your linear address space.
-* The framebuffer is just an array of 16-bit words, each 16-bit value representing the display of one character.
-* In ASCII, 8 bits are used to represent a character.
-* That gives us 8 more bits which are unused. The VGA hardware uses these to designate foreground and background colors (4 bits each).
-*/
 lazy_static! {
+    /** A global writer instance used by print!() and println!() macros.
+    * The framebuffer is accessible just like normal RAM, at address 0xB8000.
+    * It is important to note, however, that it is not actually normal RAM.
+    * It is part of the VGA controller's dedicated video memory that has been memory-mapped via hardware into your linear address space.
+    * The framebuffer is just an array of 16-bit words, each 16-bit value representing the display of one character.
+    * In ASCII, 8 bits are used to represent a character.
+    * That gives us 8 more bits which are unused. The VGA hardware uses these to designate foreground and background colors (4 bits each).
+    */
     pub static ref WRITER : Mutex<Writer> = Mutex::new(Writer {
         column_pos : 0,
         row_pos : 1,
@@ -166,5 +166,9 @@ macro_rules! println {
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
-    WRITER.lock().write_fmt(args).unwrap();
+    use x86_64::instructions::interrupts::without_interrupts;
+
+    without_interrupts(|| {
+        WRITER.lock().write_fmt(args).unwrap();
+    });
 }
