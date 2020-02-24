@@ -4,7 +4,7 @@ use x86_64::structures::gdt::{GlobalDescriptorTable, Descriptor, SegmentSelector
 use x86_64::structures::tss::TaskStateSegment;
 
 pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
-const STACK_SIZE: usize = 4096;
+const STACK_SIZE: usize = 4096; // 4 KiB
 
 lazy_static! {
     static ref TSS : TaskStateSegment = {
