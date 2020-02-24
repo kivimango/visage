@@ -3,6 +3,7 @@
 
 use core::panic::PanicInfo;
 use visage::println;
+use x86_64;
 
 /* Kernel entry point.
 * Extern "C" for telling the compiler to use the C calling convention (at this time Rust has unspecified calling convention)
@@ -16,7 +17,9 @@ pub extern "C" fn _start() -> ! {
     println!("visage {}", "0.0.1");
     visage::init();
     println!("kernel is running...");
-    loop{}
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
 /* The panic_handler attribute defines the function that the compiler should invoke when a panic occurs. 
@@ -27,5 +30,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     println!("{}", _info);
-    loop {}
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
